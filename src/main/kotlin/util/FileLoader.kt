@@ -1,5 +1,6 @@
 package util
 
 object FileLoader {
-    fun loadFile(fileName: String) = {}::class.java.getResource(fileName)!!.readText()
+    fun loadFileAsText(fileName: String) = {}::class.java.getResource(fileName)!!.readText()
+    fun loadFileAsLines(fileName: String) = loadFileAsText(fileName).split(System.lineSeparator())
 }

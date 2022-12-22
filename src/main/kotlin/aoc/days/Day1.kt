@@ -4,7 +4,7 @@ import util.FileLoader
 
 val day1 = fun() {
 
-    val input = FileLoader.loadFile("/day1_input.txt")
+    val input = FileLoader.loadFileAsText("/day1_input.txt")
 
     val eachElfCaloriesList = input
         .split("${System.lineSeparator()}${System.lineSeparator()}")
