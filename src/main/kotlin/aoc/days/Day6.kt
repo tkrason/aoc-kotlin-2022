@@ -12,10 +12,10 @@ val day6 = fun() {
     println(startOfMessage)
 }
 
-fun String.findPacketStart() = findPoint(4)
-fun String.findMessageStart() = findPoint(14)
+private fun String.findPacketStart() = findPoint(4)
+private fun String.findMessageStart() = findPoint(14)
 
-fun String.findPoint(size: Int) = this
+private fun String.findPoint(size: Int) = this
     .asSequence()
     .windowed(size)
     .indexOfFirst { it.toSet().size == size } + size
