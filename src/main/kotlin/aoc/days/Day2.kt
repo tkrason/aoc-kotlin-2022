@@ -82,7 +82,7 @@ enum class EnemyChoice(val representedBy: String) {
     }
 }
 
-fun String.toMyChoiceEnum() = MyChoice.values().first { it.representedBy == this }
-fun String.toEnemyChoiceEnum() = EnemyChoice.values().first { it.representedBy == this }
-fun String.toResult() = Result.values().first { it.representedBy == this }
+private fun String.toMyChoiceEnum() = MyChoice.values().first { it.representedBy == this }
+private fun String.toEnemyChoiceEnum() = EnemyChoice.values().first { it.representedBy == this }
+private fun String.toResult() = Result.values().first { it.representedBy == this }
 

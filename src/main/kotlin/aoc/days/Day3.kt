@@ -23,13 +23,13 @@ val day3 = fun() {
     println(sumOfBadgesPriorities)
 }
 
-fun String.splitInMiddle() = listOf(
+private fun String.splitInMiddle() = listOf(
     substring(0, length / 2), substring(length / 2, length)
 )
 
-const val utf16UppercaseA = 65
-const val utf16LowercaseA = 97
-fun Char.getPriority() = when (isUpperCase()) {
+private const val utf16UppercaseA = 65
+private const val utf16LowercaseA = 97
+private fun Char.getPriority() = when (isUpperCase()) {
     false -> 1 + (code - utf16LowercaseA)
     true -> 27 + (code - utf16UppercaseA)
 }
