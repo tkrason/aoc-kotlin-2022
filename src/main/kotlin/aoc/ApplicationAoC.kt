@@ -7,7 +7,8 @@ fun main() {
     // printSolutionForDay(Solution.DAY_3)
     // printSolutionForDay(Solution.DAY_4)
     // printSolutionForDay(Solution.DAY_5)
-    printSolutionForDay(Solution.DAY_6)
+    //printSolutionForDay(Solution.DAY_6)
+    printSolutionForDay(Solution.DAY_7)
 }
 
 fun printSolutionForDay(day: Solution) = day.function()
