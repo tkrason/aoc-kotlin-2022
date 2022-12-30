@@ -3,27 +3,28 @@ package aoc.days
 import util.FileLoader
 import kotlin.math.abs
 
+@OptIn(ExperimentalStdlibApi::class)
 val day9 = fun() {
 
-    val lines = FileLoader.loadFileAsLines("/day9_test_input.txt")
+    val lines = FileLoader.loadFileAsLines("/day9_input.txt")
 
     val moves = lines.map {
         val split = it.split(" ")
         split[0].toDirection() to split[1].toInt()
     }
 
-    val head = RopeEnd(0, 0)
-    val tail = RopeEnd(0, 0)
+    val head = RopeKnot(0, 0)
+    val tail = RopeKnot(0, 0)
     tail willFollow head
 
-    moves.forEach { move->
+    moves.forEach { move ->
         head.executeMove(move)
     }
 
     println(tail.visited.size)
 
     // Part 2
-    val knots = buildList { repeat(10) { add(RopeEnd(0,0)) } }
+    val knots = buildList { repeat(10) { add(RopeKnot(0, 0)) } }
 
     knots
         .windowed(2, partialWindows = false)
@@ -45,10 +46,10 @@ enum class RopeDirection(val representedBy: String) {
 
 private fun String.toDirection() = RopeDirection.values().find { it.representedBy == this }!!
 
-data class RopeEnd(
+data class RopeKnot(
     var x: Int,
     var y: Int,
-    val followers: MutableList<RopeEnd> = mutableListOf(),
+    val followers: MutableList<RopeKnot> = mutableListOf(),
     val visited: MutableSet<Pair<Int, Int>> = mutableSetOf()
 ) {
 
@@ -61,44 +62,52 @@ data class RopeEnd(
 
     private fun moveInDirection(direction: RopeDirection) {
         saveLocation()
-        val currentX = x
-        val currentY = y
-        when(direction) {
+        when (direction) {
             RopeDirection.UP -> y += 1
             RopeDirection.DOWN -> y -= 1
             RopeDirection.RIGHT -> x += 1
             RopeDirection.LEFT -> x -= 1
         }
         saveLocation()
-        followers.forEach { it.moveIfNeeded(currentX, currentY, x, y) }
+        moveFollowersIfNeeded()
     }
 
     private fun saveLocation() = visited.add(x to y)
 
-    private fun moveIfNeeded(previousParentX: Int, previousParentY: Int, parentX: Int, parentY: Int) {
+    private fun moveFollowersIfNeeded() =
+        followers.forEach { follower -> follower.simulateKnotMovementWithParentAt(x, y) }
+
+    private fun simulateKnotMovementWithParentAt(parentX: Int, parentY: Int) {
         saveLocation()
-        val currentX = x
-        val currentY = y
 
-        val absX = abs(parentX - x)
-        val absY = abs(parentY - y)
+        val absoluteX = abs(parentX - x)
+        val absoluteY = abs(parentY - y)
 
-        /*
-            0 0 0 0 0
-            0 0 0 p p
-            0 0 x 0 0
-            0 0 0 0 0
-            0 0 0 0 0
-         */
-        if(absX > 1 || absY > 1) {
-            x = previousParentX
-            y = previousParentY
+        if (knotIsNotTouchingParent(absoluteX, absoluteY)) {
+
+            val moveInX = when {
+                parentX - x > 0 -> 1
+                parentX - x < 0 -> -1
+                else -> 0
+            }
+
+            val moveInY = when {
+                parentY - y > 0 -> 1
+                parentY - y < 0 -> -1
+                else -> 0
+            }
+
+            x += moveInX
+            y += moveInY
+
             saveLocation()
-            followers.forEach { it.moveIfNeeded(currentX, currentY, x, y) }
+            moveFollowersIfNeeded()
         }
     }
 }
 
-private infix fun RopeEnd.willFollow(rope: RopeEnd) {
+private infix fun RopeKnot.willFollow(rope: RopeKnot) {
     rope.followers.add(this)
 }
+
+private fun knotIsNotTouchingParent(absoluteX: Int, absoluteY: Int) = absoluteX > 1 || absoluteY > 1
