@@ -14,4 +14,5 @@ enum class Solution(val function: () -> Unit) {
     DAY_8(day8),
     DAY_9(day9),
     DAY_10(day10),
+    DAY_11(day11),
 }
