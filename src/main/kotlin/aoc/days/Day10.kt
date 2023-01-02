@@ -18,25 +18,46 @@ val day10 = fun() {
 
     val cpu = Cpu()
     cpu.runInstructions(instructions)
-
-    println(cpu.signalStrengthCollector.sum())
+    println(cpu.getSignalStrength())
+    cpu.printCtrScreen()
 }
 
 class Cpu {
 
     private var cycle: Int = 1
     var registerX: Int = 1
-    val collectRegisterStateAtCycle = listOf(20, 60, 100, 140, 180, 220)
-    var signalStrengthCollector = mutableListOf<Int>()
+    private val collectRegisterStateAtCycle = listOf(20, 60, 100, 140, 180, 220)
+    private var signalStrengthCollector = mutableListOf<Int>()
+    private var ctrScreen = mutableListOf<String>()
 
     fun runInstructions(instructions: List<Instruction>) {
         instructions.forEach { it.work(this) }
     }
 
     fun tick() {
-        if(cycle in collectRegisterStateAtCycle) { signalStrengthCollector.add(cycle * registerX)}
+        if (cycle in collectRegisterStateAtCycle) { signalStrengthCollector.add(cycle * registerX) }
+        drawPixelOnCtr()
         cycle++
     }
+
+    fun getSignalStrength() = signalStrengthCollector.sum()
+
+    val CRT_LIT = "#"
+    val CRT_UNLIT = "."
+
+    private fun drawPixelOnCtr() {
+        val printingInPixel = (cycle - 1) % 40
+        val spriteCoversPositions = registerX - 1..registerX + 1
+        when (printingInPixel in spriteCoversPositions) {
+            true -> ctrScreen.add(CRT_LIT)
+            false -> ctrScreen.add(CRT_UNLIT)
+        }
+    }
+
+    fun printCtrScreen() = ctrScreen
+        .chunked(40)
+        .forEach { println(it.joinToString(separator = "")) }
+
 }
 
 interface Instruction {
